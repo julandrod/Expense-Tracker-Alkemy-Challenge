@@ -6,6 +6,7 @@ import errorHandlerMiddleware from "./middlewares/errorHandler.js";
 
 // API routes
 import authRoutes from "./routes/auth.routes.js";
+import transactionsRoutes from "./routes/transactions.routes.js"
 
 // API configuration
 const app = express();
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
   res.send("Expenses - Alkemy Challenge API");
 });
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/transactions", transactionsRoutes);
 
 // Error handler middlewares
 app.use(routeNotFoundMiddleware);
