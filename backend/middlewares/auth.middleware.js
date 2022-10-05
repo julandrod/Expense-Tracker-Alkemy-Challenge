@@ -1,11 +1,11 @@
-import UnathenticatedError from "../errors/unathenticated";
-import { isTokenValid } from "../utils/jwt";
+import UnauthenticatedError from "../errors/unauthenticated.js";
+import { isTokenValid } from "../utils/jwt.js";
 
 export const authenticateUser = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new UnathenticatedError("No hay un token presente");
+    throw new UnauthenticatedError("No hay un token presente");
   }
 
   const token = authHeader.split(" ")[1];
@@ -15,6 +15,6 @@ export const authenticateUser = async (req, res, next) => {
     req.user = { ...decoded };
     next();
   } catch (error) {
-    throw new UnathenticatedError("El token no es valido");
+    throw new UnauthenticatedError("El token no es valido");
   }
 };
