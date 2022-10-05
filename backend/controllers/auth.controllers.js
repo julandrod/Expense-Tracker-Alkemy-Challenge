@@ -1,8 +1,10 @@
 import { StatusCodes } from "http-status-codes";
-import BadRequestError from "../errors/bad-request.js";
-import { insertUserDb } from "../models/users.js";
-import { encryptPassword } from "../utils/encryptPassword.js";
+import { BadRequestError, UnauthenticatedError } from "../errors/index.js";
+import { getUserByEmailDb, insertUserDb } from "../models/users.js";
+import createUserPayload from "../utils/createUserPayload.js";
+import { comparePassword, encryptPassword } from "../utils/encryptPassword.js";
 import formatUsername from "../utils/formatUsername.js";
+import { createJWT } from "../utils/jwt.js";
 import validateEmail from "../utils/validateEmail.js";
 
 export const register = async (req, res) => {
@@ -22,4 +24,27 @@ export const register = async (req, res) => {
   res
     .status(StatusCodes.CREATED)
     .json({ msg: "Nuevo usuario registrado", user: newUser });
+};
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new BadRequestError("Por favor ingrese email y contraseña");
+  }
+
+  const userFound = await getUserByEmailDb(email);
+  if (!userFound) {
+    throw new UnauthenticatedError("Datos de acceso invalidos");
+  }
+
+  const isPasswordCorrect = await comparePassword(password, userFound.password);
+  if (!isPasswordCorrect) {
+    throw new UnauthenticatedError("Datos de acceso invalidos");
+  }
+
+  const userInfo = createUserPayload(userFound);
+  const token = createJWT({ payload: userInfo });
+
+  res.status(StatusCodes.CREATED).json({ user: userInfo, token });
 };
