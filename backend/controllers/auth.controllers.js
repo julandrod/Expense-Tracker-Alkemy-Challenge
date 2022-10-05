@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import BadRequestError from "../errors/bad-request.js";
 import { insertUserDb } from "../models/users.js";
 import { encryptPassword } from "../utils/encryptPassword.js";
@@ -7,12 +8,12 @@ import validateEmail from "../utils/validateEmail.js";
 export const register = async (req, res) => {
   const { email, name, password } = req.body;
 
-  if (!validateEmail(email)) {
-    throw new BadRequestError("Por favor ingrese un email valido");
-  }
-
   if (!email || !name || !password) {
     throw new BadRequestError("Debes ingresar nombre, email y password");
+  }
+
+  if (!validateEmail(email)) {
+    throw new BadRequestError("Por favor ingrese un email valido");
   }
 
   req.body.name = formatUsername(name);
