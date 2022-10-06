@@ -3,6 +3,7 @@ import { BadRequestError } from "../errors/index.js";
 import {
   createTransactionDb,
   deleteTransactionDb,
+  filterTransactionsDb,
   getAllTransactionsDb,
   getSingleTransactionDB,
   updateTransactionDb,
@@ -29,15 +30,34 @@ export const createTransaction = async (req, res) => {
 };
 
 export const getAllTransactions = async (req, res) => {
-  const transactions = await getAllTransactionsDb(req.user.userId);
-  const quantity = transactions.length;
-  res.status(StatusCodes.OK).json({ transactions, quantity });
+  const { type, category, sort } = req.query;
+  let transactions;
+  let filters = {};
+
+  transactions = await getAllTransactionsDb(req.user.userId);
+
+  // Filter conditions
+  if (type && type !== "all") {
+    filters.type = type;
+  }
+  if (category && category !== "all") {
+    filters.category = category;
+  }
+  if (type || category) {
+    transactions = await filterTransactionsDb({ filters, userId: req.user.userId });
+  }
+
+  const quantity = transactions.transactions.length;
+  res.status(StatusCodes.OK).json({ ...transactions, quantity });
 };
 
 export const getTransactionById = async (req, res) => {
   const transactionId = req.params.id;
 
-  const result = await getSingleTransactionDB(transactionId);
+  const result = await getSingleTransactionDB({
+    transactionId,
+    userId: req.user.userId,
+  });
   if (!result) {
     throw new BadRequestError(
       `No se encontro ninguna transaccion con el id ${transactionId}`
@@ -49,13 +69,6 @@ export const getTransactionById = async (req, res) => {
 
 export const updateTransactionById = async (req, res) => {
   const transactionId = req.params.id;
-
-  const foundTransaction = await getSingleTransactionDB(transactionId);
-  if (!foundTransaction) {
-    throw new BadRequestError(
-      `No se encontro ninguna transaccion con el id ${transactionId}`
-    );
-  }
 
   const { concepto, monto, categoria } = req.body;
 
@@ -72,15 +85,22 @@ export const updateTransactionById = async (req, res) => {
   }
 
   const updatedTransaction = await updateTransactionDb({
-    transactionInfo: { ...req.body, transactionId },
+    transactionInfo: { ...req.body, transactionId, userId: req.user.userId },
   });
+
+  if (!updatedTransaction) {
+    throw new BadRequestError(
+      `No se encontro ninguna transaccion con el id ${transactionId}`
+    );
+  }
+
   res.status(StatusCodes.CREATED).json(updatedTransaction);
 };
 
 export const deleteTransactionById = async (req, res) => {
   const transactionId = req.params.id;
 
-  const result = await deleteTransactionDb(transactionId);
+  const result = await deleteTransactionDb({transactionId, userId: req.user.userId});
 
   if (!result) {
     throw new BadRequestError(
