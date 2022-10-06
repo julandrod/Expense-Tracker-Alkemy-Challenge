@@ -18,7 +18,7 @@ app.use(express.json());
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("Expenses - Alkemy Challenge API");
+  res.send("Expense Tracker - Alkemy Challenge API");
 });
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/transactions", transactionsRoutes);
