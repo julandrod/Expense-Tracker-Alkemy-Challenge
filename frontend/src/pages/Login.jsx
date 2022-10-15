@@ -50,7 +50,7 @@ const Login = () => {
   if (userInfo) {
     const textAlert =
       (userValues.isLogin ? "!Ingreso exitoso!" : "!Usuario creado!") +
-      " Regresando a la aplicación";
+      "Regresando a la aplicación";
     swal({
       text: textAlert,
       icon: "success",
@@ -97,7 +97,7 @@ const Login = () => {
           placeholder="Password"
           handleChange={handleChange}
         />
-        <button type="submit" className="btn btn-block" disabled={userLoading}>
+        <button type="submit" className="btn" disabled={userLoading}>
           {userValues.isLogin ? "Ingresar" : "Crear cuenta"}
         </button>
         <p>
@@ -114,7 +114,7 @@ const Login = () => {
 };
 
 const LoginWrapper = styled.section`
-  height: 100vh;
+  min-height: calc(100vh - var(--navbar-height));
   width: 100vw;
   overflow: hidden;
   display: flex;
