@@ -95,13 +95,6 @@ Todos los endpoints usan Bearer Token
 | :-------- | :------- | :-------------------------------- |
 | `id`      | `int`    | **Requerido**. Id de la transacción|
 
-#### Actulizar transacción por id
-```http
-  PUT /api/v1/transactions/:id
-```
-| Parametro | Tipo     | Descripción                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `int`    | **Requerido**. Id de la transacción|
 
 #### Actulizar transacción por id
 ```http
