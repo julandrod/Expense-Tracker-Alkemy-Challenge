@@ -44,7 +44,10 @@ export const getAllTransactions = async (req, res) => {
     filters.category = category;
   }
   if (type || category) {
-    transactions = await filterTransactionsDb({ filters, userId: req.user.userId });
+    transactions = await filterTransactionsDb({
+      filters,
+      userId: req.user.userId,
+    });
   }
 
   const quantity = transactions.transactions.length;
@@ -94,13 +97,16 @@ export const updateTransactionById = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.CREATED).json(updatedTransaction);
+  res.status(StatusCodes.CREATED).json({msg: "Transaccion actualizada exitosamente!", result: updatedTransaction});
 };
 
 export const deleteTransactionById = async (req, res) => {
   const transactionId = req.params.id;
 
-  const result = await deleteTransactionDb({transactionId, userId: req.user.userId});
+  const result = await deleteTransactionDb({
+    transactionId,
+    userId: req.user.userId,
+  });
 
   if (!result) {
     throw new BadRequestError(
@@ -108,5 +114,5 @@ export const deleteTransactionById = async (req, res) => {
     );
   }
 
-  res.status(StatusCodes.OK).json("Transaccion borrada exitosamente!");
+  res.status(StatusCodes.OK).json({ msg: "Transaccion borrada exitosamente!" });
 };
