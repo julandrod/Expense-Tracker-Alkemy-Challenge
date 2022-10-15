@@ -1,7 +1,7 @@
 
 # Expense Tracker - Alkemy Challenge
 
-Expense Tracker es una aplicacion que permite gestionar los gastos e ingresos de un usuario. Esta app fue construida para participar en el challenge Fullstack JS de Alkemy.
+Expense Tracker es una aplicacion que permite gestionar los gastos e ingresos de un usuario. Esta app fue desarrollada para el challenge Fullstack JS de Alkemy.
 
 
 ## Tech Stack
