@@ -48,13 +48,12 @@ export const getSingleTransactionDB = async ({ transactionId, userId }) => {
 
 export const updateTransactionDb = async ({ transactionInfo }) => {
   const { concepto, monto, categoria, transactionId, userId } = transactionInfo;
-  const fecha = await pool.query("SELECT NOW()");
   const result = await pool.query(
     `UPDATE transactions 
-      SET concepto = $1, monto = $2, categoria = $3, fecha = $4 
-      WHERE userId = $5 AND transactionId = $6 
+      SET concepto = $1, monto = $2, categoria = $3 
+      WHERE userId = $4 AND transactionId = $5
       RETURNING *`,
-    [concepto, monto, categoria, fecha.rows[0].now, userId, transactionId]
+    [concepto, monto, categoria,  userId, transactionId]
   );
   return result.rows[0];
 };
